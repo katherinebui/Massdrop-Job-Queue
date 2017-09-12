@@ -40,22 +40,8 @@ test('Receiving and processing jobs', t => {
 
       // Check to see if the jobInfo is intact
       t.equals(jobInfo.received, true, 'Should have been received');
-      t.equals(jobInfo.jobInfoID, fakeJob.jobInfoID, 'jobInfo ID should be the same');
+      t.equals(jobInfo.jobID, fakeJob.jobID, 'jobInfo ID should be the same');
       t.end();
     });
 });
 
-test('Creating jobs and processing items with the queue', t => {
-  queue.testMode.enter();
-
-  queue.createJob('job', fakeJob).save();
-  queue.createJob('job', fakeJob).save();
-
-  t.equal(queue.testMode.jobs.length, 2, 'There should be two jobs');
-  t.equal(queue.testMode.jobs[0].type, 'job', 'The jobs should be of type job');
-  t.equal(queue.testMode.jobs[0].data, fakeJob, 'The job data should be intact');
-
-  queue.testMode.clear();
-  queue.testMode.exit()
-  t.end();
-});

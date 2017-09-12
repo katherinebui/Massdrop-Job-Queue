@@ -5,7 +5,7 @@ const job = require('../queue/jobs');
 
 router.post('/', (req, res, next) => {
   const jobInfo = req.body;
-  job.create(order, (err) => {
+  job.create(jobInfo, (err) => {
     if(err) {
       return res.json({
         error: err,

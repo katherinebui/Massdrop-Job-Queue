@@ -1,55 +1,46 @@
 'use strict';
 
-let redisConfig;
-if (process.env.NODE_ENV === 'production'){
-  redisConfig = {
-    redis: {
-      port: process.env.REDIS_PORT,
-      host: process.env.REDIS_HOST,
-      auth: process_env.REDIS_PASS,
-      options: {
-        no_ready_check: false
-      }
-    }
-  };
-  else {
-    redisConfig = {};
-  }
-}
-
+const redis = require('redis');
 const kue = require('kue');
-const queue = kue.createQueue(redisConfig);
-queue.watchStuckJobs(1000 * 10)
+const validURL = require('valid-url');
+const app = require('../app');
+
+const redisClient = redis.createClient();
+const queue = kue.createQueue();
+
+redisClient.on('connect', function() {
+  console.log('Redis connection established!');
+})
+
+redisClient.on('error', function(err){
+  console.log('An error has occurred: ' + err);
+})
 
 queue.on('ready', () => {
-  console.info('Queue is ready!')
+  console.log('Queue is ready!')
 });
 
 queue.on('error', (err) => {
-  console.error('There was an error in the main queue!');
-  console.error(err);
-  console.err(err.stack);
+  console.log('There was an log in the main queue!');
+  console.log(err);
+  console.log(err.stack);
 })
 
-kue.app.listen(process.env.KUE_PORT);
-kue.app.set('title', 'Kue');
-
 function createJob(data, done){
-  queue.create('job', data){
+  queue.create('job', data)
     .priority('high')
     .attempts(8)
     .backoff(true)
     .removeOnCompelte(true)
     .save(err => {
       if(err){
-        console.error(err);
+        console.log(err);
         done(err);
       }
       if(!err){
         done();
       }
     });
-  }
 }
 
 module.exports = {
