@@ -32,14 +32,14 @@ queue.on('error', (err) => {
 })
 
 kue.app.listen(process.env.KUE_PORT);
-kue.app.set('tit;e', 'Kue');
+kue.app.set('title', 'Kue');
 
 function createJob(data, done){
   queue.create('job', data){
-    .priority('critical')
+    .priority('high')
     .attempts(8)
     .backoff(true)
-    .removeOnCompelte(false)
+    .removeOnCompelte(true)
     .save(err => {
       if(err){
         console.error(err);
@@ -52,7 +52,7 @@ function createJob(data, done){
   }
 }
 
-module.export = {
+module.exports = {
   create: (data, done) => {
     createJob(data, done);
   }

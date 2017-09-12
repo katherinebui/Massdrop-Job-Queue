@@ -10,10 +10,10 @@ const test = require('tape');
 const fakeJob = {
   // This job property lets you make better use of the UI
   title: 'www.google.com',
-  jobID: '1a2b3c4',
+  jobID: '101',
   received: true,
-  receivedAt: new Date('December 24, 2015 23:59:59'),
-  createdAt: new Date('December 24, 2015 23:58:59'),
+  receivedAt: new Date('September 12, 2017 12:59:59'),
+  createdAt: new Date('September 12, 2017 12:58:59'),
   customer: {
     firstName: 'A',
     lastName: 'Person',
@@ -23,9 +23,9 @@ const fakeJob = {
 };
 
 
-test('Receiving and processing payments', t => {
+test('Receiving and processing jobs', t => {
   api
-    .post('/payments')
+    .post('/jobs')
     .send(fakeJob)
     .end((err, res) => {
       const jobInfo = res.body.jobInfo
@@ -45,7 +45,7 @@ test('Receiving and processing payments', t => {
     });
 });
 
-test('Creating payments and processing items with the queue', t => {
+test('Creating jobs and processing items with the queue', t => {
   queue.testMode.enter();
 
   queue.createJob('job', fakeJob).save();
