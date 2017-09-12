@@ -8,11 +8,11 @@ const app = require('../app');
 const redisClient = redis.createClient();
 const queue = kue.createQueue();
 
-redisClient.on('connect', function() {
+redisClient.on('connect', () => {
   console.log('Redis connection established!');
 })
 
-redisClient.on('error', function(err){
+redisClient.on('error', (err) => {
   console.log('An error has occurred: ' + err);
 })
 
@@ -26,8 +26,8 @@ queue.on('error', (err) => {
   console.log(err.stack);
 })
 
-function createJob(data, done){
-  queue.create('job', data)
+const createJob = (data, res, done) => {
+  let job = queue.create('request', data)
     .priority('high')
     .attempts(8)
     .backoff(true)
@@ -38,6 +38,8 @@ function createJob(data, done){
         done(err);
       }
       if(!err){
+        res.send('Your job ID is ' + job.id);
+        client.hset(job.id, 'data', 'none', 'redis.print');
         done();
       }
     });

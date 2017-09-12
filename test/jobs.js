@@ -9,7 +9,7 @@ const test = require('tape');
 
 const fakeJob = {
   // This job property lets you make better use of the UI
-  title: 'www.google.com',
+  url: 'www.google.com',
   jobID: '101',
   received: true,
   receivedAt: new Date('September 12, 2017 12:59:59'),
