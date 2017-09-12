@@ -1,0 +1,14 @@
+{
+  "name": "Massdrop-Job-Queue",
+  "author": {
+    "name": "Katherine Bui"
+  },
+  "version": "0.1.0",
+  "dependencies": {
+    "express": "^4.15.4",
+    "kue": "^0.11.6",
+    "redis": "^2.8.0",
+    "valid-url": "^1.0.9"
+  },
+  "devDependencies": {}
+}
