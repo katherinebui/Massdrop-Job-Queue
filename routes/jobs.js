@@ -3,20 +3,22 @@
 // const app = require('../app');
 // const job = require('../queue/jobs');
 // const validURL = require('valid-url');
-// const axios = require('axios');
 
-// app.post('/create/:url', (req, res) => {
-//   res.send('posting');
-//   console.log(req.body);
-//   // if(validURL.isHttpUri('http://' + req.params['url'])){
-//   //   createJob('http://' + req.params['url']);
-//   // } else {
-//   //   console.log('There was an error creating new job');
-//   // }
-//   req.end();
-// });
+// const express = require('express')
+// const router = express.Router();
 
-
-// app.post('/', function (req, res) {
-//   res.send('POST request to the homepage')
+// router.get('/create', (req, res) => {
+//   res.send('this be the url dude: ' + req.params);
 // })
+
+// module.exports = router;
+
+
+
+const routes = require('express').Router();
+
+routes.get('/', (req, res) => {
+  res.status(200).json({ message: 'Connected!' });
+});
+
+module.exports = routes;

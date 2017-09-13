@@ -1,51 +1,58 @@
-'use strict';
+// 'use strict';
 
-const express = require('express');
-const kue = require('kue');
-const logger = require('morgan');
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const redis = require('redis');
+// const express = require('express');
+// const logger = require('morgan');
+// const bodyParser = require("body-parser");
+// const cookieParser = require("cookie-parser");
+// const redis = require('redis');
 
-const app = express();
-const router = express.Router();
-app.use(router);
+// const app = express();
+// const routes = require('./routes/jobs');
+// const client = redis.createClient();
 
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true}));
-app.use(cookieParser());
+// app.use(logger('dev'));
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true}));
+// app.use(cookieParser());
 
-app.set('port', (process.env.PORT || 3000));
+// // app.use('/create', routes);
 
-app.listen(app.get('port'), () => {
-  console.log('Server listening on port: ', app.get('port'));
+// app.set('port', (process.env.PORT || 3000));
+
+// app.listen(app.get('port'), () => {
+//   console.log('Server listening on port: ', app.get('port'));
+// });
+
+
+// client.on('connect', () =>{
+//   console.log('Redis connection established!');
+// })
+
+// client.on('error', (err) => {
+//   console.log('An error has occurred: ' + err);
+// })
+
+// // app.get('/create', (req, res) => {
+// //   res.send('this be the url dude: ' + req.params);
+// // })
+
+// // const router = express.Router();
+
+// // router.get('/create', (req, res) => {
+// //   res.send('this be the url dude: ' + req.params);
+// // })
+
+// module.exports = app;
+
+
+// Bring in our dependencies
+const app = require('express')();
+const routes = require('./routes/jobs');
+
+//  Connect all our routes to our application
+app.use('/', routes);
+
+// Turn on that server!
+app.listen(3000, () => {
+  console.log('App listening on port 3000');
 });
-
-const client = redis.createClient();
-const queue = kue.createQueue();
-
-client.on('connect', () =>{
-  console.log('Redis connection established!');
-})
-
-client.on('error', (err) => {
-  console.log('An error has occurred: ' + err);
-})
-
-queue.on('ready', () => {
-  console.log('Queue is ready!')
-});
-
-queue.on('error', (err) => {
-  console.log('There was an log in the main queue!');
-  console.log(err);
-})
-
-app.get('/create', (req, res) => {
-  // res.send('this be the url dude: ' + req.param('url'))
-})
-
-
-module.exports = app;
-
