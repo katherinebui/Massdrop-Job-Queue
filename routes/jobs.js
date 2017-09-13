@@ -1,27 +1,22 @@
-'use strict';
+// 'use strict';
 
-const router = require('express').Router();
-const job = require('../queue/jobs');
-const validURL = require('valid-url');
+// const app = require('../app');
+// const job = require('../queue/jobs');
+// const validURL = require('valid-url');
+// const axios = require('axios');
 
-router.post('/', (req, res) => {
+// app.post('/create/:url', (req, res) => {
+//   res.send('posting');
+//   console.log(req.body);
+//   // if(validURL.isHttpUri('http://' + req.params['url'])){
+//   //   createJob('http://' + req.params['url']);
+//   // } else {
+//   //   console.log('There was an error creating new job');
+//   // }
+//   req.end();
+// });
 
-  if(validURL.isHttpUri('http://' + req.params['url'])){
-    createJob('http://' + req.params['url'], res);
-    return res.json({
-        error: null,
-        success: true,
-        message: 'Successfully created job',
-        jobInfo
-      });
-  } else {
-    return res.json({
-        error: err,
-        success: false,
-        message: 'Could not create job',
-      });
-  }
-});
 
-module.exports = router;
-
+// app.post('/', function (req, res) {
+//   res.send('POST request to the homepage')
+// })
