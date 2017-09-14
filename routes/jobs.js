@@ -23,10 +23,8 @@ routes.post('/create/:url', (req, res) => {
   }
 })
 
-
 routes.get('/:id/status', (req, res) => {
   const id = req.params.id;
-
   job.requestStatus(id, res);
 })
 
