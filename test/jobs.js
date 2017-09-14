@@ -27,23 +27,22 @@ test('Gets status by ID of job', t => {
     .send(1)
     .end((err, res) => {
       t.ok(res.body, 'Should respond with a body');
-      t.equals(res.body.success, true, 'The success property should be true');
-      t.ok(res.body.message, 'Should have a message property');
       t.end();
   });
 });
 
 
-// test('Creating payments and processing items with the queue', t => {
-//   queue.testMode.enter();
+test('Creating jobs and processing items with the queue', t => {
+  queue.testMode.enter();
 
-//   queue.createJob('payment', dummyOrder).save();
-//   queue.createJob('payment', dummyOrder).save();
+  queue.createJob('job', dummyRequest).save();
+  queue.createJob('job', dummyRequest).save();
 
-//   t.equal(queue.testMode.jobs.length, 2, 'There should be two jobs');
-//   t.equal(queue.testMode.jobs[0].type, 'payment', 'The jobs should be of type payment');
-//   t.equal(queue.testMode.jobs[0].data, dummyOrder, 'The job data should be intact');
+  t.equal(queue.testMode.jobs.length, 2, 'There should be two jobs');
+  t.equal(queue.testMode.jobs[0].type, 'job', 'The jobs should be of type job');
+  t.equal(queue.testMode.jobs[0].data, dummyRequest, 'The job data should be intact');
 
-//   queue.testMode.clear();
-//   queue.testMode.exit()
-//   t.end();
+  queue.testMode.clear();
+  queue.testMode.exit()
+  t.end();
+});

@@ -2,6 +2,8 @@
 
 const app = require('../app');
 
+require('events').EventEmitter.prototype._maxListeners = 100;
+
 const kue = require('kue');
 const queue = kue.createQueue();
 
@@ -59,6 +61,7 @@ const processJob = (job, data, res) => {
 
 queue.process('job', 20, (job, done) => {
   processJob(job, done);
+  done();
 })
 
 const statusCheck = (id, res) => {
