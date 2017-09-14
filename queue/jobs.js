@@ -67,11 +67,17 @@ queue.process('job', 20, (job, done) => {
 const statusCheck = (id, res) => {
   kue.Job.get(id, (err, job) => {
     if(err){
-      res.send('Something went wrong ' + err);
+      res.send({
+        message: 'Something went wrong ' + err
+      });
     } else if(id == null) {
-      res.send('Your job ID does not exist. Please try again.');
+      res.send({
+        message: 'Your job ID does not exist. Please try again.'
+      });
     } else {
-      res.send('The status of job ID #' + job.id + ' is ' + job._state);
+      res.send({
+        message: 'The status of job ID #' + job.id + ' is ' + job._state
+      });
     }
   })
 }

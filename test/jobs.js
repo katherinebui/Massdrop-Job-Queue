@@ -7,7 +7,7 @@ const queue = require('kue').createQueue();
 
 const test = require('tape');
 
-const dummyRequest = 'www.google.com'
+const dummyRequest = 'www.google.com';
 
 test('Receiving and processing jobs', t => {
   api
@@ -21,12 +21,14 @@ test('Receiving and processing jobs', t => {
   });
 });
 
+const dummyID = '1';
+
 test('Gets status by ID of job', t => {
   api
     .get('/:id/status')
-    .send(1)
+    .send(dummyID)
     .end((err, res) => {
-      t.ok(res.body, 'Should respond with a body');
+      t.ok(res.body.message, 'Should have a message property');
       t.end();
   });
 });
