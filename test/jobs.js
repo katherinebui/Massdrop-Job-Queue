@@ -31,7 +31,6 @@ test('Gets status by ID of job', t => {
   });
 });
 
-
 test('Creating jobs and processing items with the queue', t => {
   queue.testMode.enter();
 
