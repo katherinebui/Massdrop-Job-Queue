@@ -19,7 +19,7 @@ client.on('error', (err) => {
 
 module.exports = {
 
-  createJob: function(data, res){
+  createJob: (data, res) => {
     let job = queue.create('request', data)
       .priority('high')
       .removeOnComplete(true)
