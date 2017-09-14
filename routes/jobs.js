@@ -11,8 +11,9 @@ routes.get('/', (req, res) => {
   res.status(200).json({ message: 'Hello! Are you ready?' });
 });
 
-routes.get('/create/:url', (req, res) => {
+routes.post('/create/:url', (req, res) => {
   const url = req.params.url;
+  console.log('get' + url)
 
   if(validURL.isUri('http://' + url)){
     console.log('url looks valid!');
@@ -22,4 +23,10 @@ routes.get('/create/:url', (req, res) => {
   }
 })
 
+
+// routes.get('/:id/status', (req, res) => {
+//   const id = req.params.id;
+
+
+// })
 module.exports = routes;

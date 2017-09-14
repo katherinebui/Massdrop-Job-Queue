@@ -9,7 +9,7 @@ const redis = require('redis');
 const client = redis.createClient();
 
 client.on('connect', () =>{
-  console.log('Redis connection established!');
+  console.log('Redis connection established');
 })
 
 client.on('error', (err) => {
@@ -53,6 +53,9 @@ queue.process('job', 20, (job, done) => {
   processJob(job, done);
 })
 
+// const statusCheck = (id, res) => {
+
+// }
 
 module.exports = {
   create: (data, done) => {
