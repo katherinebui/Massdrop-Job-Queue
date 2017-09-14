@@ -33,29 +33,5 @@ client.on('error', (err) => {
   console.log('An error has occurred: ' + err);
 })
 
-// app.get('/create', (req, res) => {
-//   res.send('this be the url dude: ' + req.params);
-// })
-
-// const router = express.Router();
-
-// router.get('/create', (req, res) => {
-//   res.send('this be the url dude: ' + req.params);
-// })
-
 module.exports = app;
 
-
-// // Bring in our dependencies
-// const app = require('express')();
-// const routes = require('./routes/jobs');
-
-// //  Connect all our routes to our application
-// app.use('/', routes);
-// app.use('/create', routes);
-
-
-// // Turn on that server!
-// app.listen(3000, () => {
-//   console.log('App listening on port 3000');
-// });
