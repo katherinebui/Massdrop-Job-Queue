@@ -16,7 +16,7 @@ routes.get('/create/:url', (req, res) => {
 
   if(validURL.isUri('http://' + url)){
     console.log('url looks valid!');
-    // client.hset("job.id", `${url}`, 'none', redis.print);
+    job.createJob(url, res);
   } else {
     console.log('This is not a valid url')
   }
