@@ -35,17 +35,25 @@ const createJob = (data, res) => {
   .save((err) => {
     if(err){
       console.log(err);
-      res.send('There was a problem creating the job');
+      // res.send('There was a problem creating the job');
+      return res.send({
+        message: 'Could not create job',
+        success: false,
+        error: err
+      });
     } else {
-      res.send('Your job ID is ' + job.id);
       client.hset(job.id, 'data', 'none', redis.print);
+      return res.send({
+        message: 'Successfully create job, your job ID is ' + job.id,
+        success: true
+      });
     }
   });
 }
 
 const processJob = (job, data, res) => {
-  // console.log(job.id);
-  // console.log(job.data);
+  console.log('Checking job id #' + job.id);
+  console.log('Checking for job data: ' + job.data);
   client.hset(job.id, 'data', job.data, redis.print);
 }
 
