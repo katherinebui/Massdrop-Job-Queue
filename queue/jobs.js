@@ -1,6 +1,5 @@
 'use strict';
 
-// const axios = require('axios');
 const app = require('../app');
 
 const kue = require('kue');
@@ -17,53 +16,45 @@ client.on('error', (err) => {
   console.log('An error has occurred: ' + err);
 })
 
-module.exports = {
-
-  createJob: (data, res) => {
-    let job = queue.create('request', data)
-      .priority('high')
-      .removeOnComplete(true)
-      .save((err) => {
-        if(err){
-          console.log(err);
-          res.send('There was an error with data transfer');
-        } else {
-          res.send('Your job ID is ' + job.id);
-          client.hset(job.id, data, 'none', redis.print);
-        }
-      });
-  }
-
+const createJob = (data, res) => {
+  let job = queue.create('job', data)
+  .priority('high')
+  .removeOnComplete(true)
+  .on('completed', (result) => {
+    console.log('Job completed with data ', result);
+  })
+  .on('failed', (errorMessage) => {
+    console.log('Job failed');
+  })
+  .on('progress', (progress, data) => {
+    console.log('\r  job #' + job.id + ' ' + progress + '% complete with data ', data);
+  })
+  .on('job enqueue', (id, type) => {
+    console.log('Job %s got queued of type %s', id, type );
+  })
+  .save((err) => {
+    if(err){
+      console.log(err);
+      res.send('There was a problem creating the job');
+    } else {
+      res.send('Your job ID is ' + job.id);
+      client.hset(job.id, 'data', 'none', redis.print);
+    }
+  });
 }
-// var job = queue.create('email', {
-//     title: 'welcome email for tj'
-// }).save( function(err){
-//    if( !err ) console.log( 'this is not job err ' + job.id );
-// });
 
-// job.on('complete', function(result){
-//   console.log('Job completed with data ', result);
-
-// }).on('failed attempt', function(errorMessage, doneAttempts){
-//   console.log('Job failed');
-
-// }).on('failed', function(errorMessage){
-//   console.log('Job failed');
-
-// }).on('progress', function(progress, data){
-//   console.log('\r  job #' + job.id + ' ' + progress + '% complete with data ', data );
-
-// });
-
-// const processJob = (job, done) => {
-//   axios.get(job.data)
-//     .then((res) => {
-//       client.hset(job.id, 'data', res.data, redis.print);
-//       done();
-//     });
-// }
+// const processJob = (job, data, res) => {
+//   console.log(data);
+//   // client.hset(job.id, 'data', info, redis.print);
+// },
 
 // queue.process('request', 20, (job, done) => {
 //   processJob(job, done);
-// });
+// }
 
+
+module.exports = {
+  create: (data, done) => {
+    createJob(data, done);
+  }
+};

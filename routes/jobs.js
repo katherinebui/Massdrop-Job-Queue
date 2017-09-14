@@ -16,9 +16,9 @@ routes.get('/create/:url', (req, res) => {
 
   if(validURL.isUri('http://' + url)){
     console.log('url looks valid!');
-    job.createJob(url, res);
+    const j = job.create(url, res);
   } else {
-    console.log('This is not a valid url')
+    console.log('This is not a valid url');
   }
 })
 
