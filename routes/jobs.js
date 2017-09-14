@@ -1,7 +1,7 @@
 'use strict';
 
 // const job = require('../queue/jobs');
-// const validURL = require('valid-url');
+const validURL = require('valid-url');
 
 const routes = require('express').Router();
 
@@ -14,8 +14,14 @@ routes.get('/', (req, res) => {
 // });
 
 routes.get('/create/:url', (req, res) => {
+  const url = req.params.url;
 
-  res.send('this be the url dude: ' + req.params.url);
+  if(validURL.isUri('http://' + url)){
+    console.log('url looks valid!');
+  } else {
+    console.log('not a valid url dude!')
+  }
+  // res.send('this be the url dude: ' + req.params.url);
 })
 
 
