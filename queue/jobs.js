@@ -53,12 +53,17 @@ queue.process('job', 20, (job, done) => {
   processJob(job, done);
 })
 
-// const statusCheck = (id, res) => {
-
-// }
+const statusCheck = (id, res) => {
+  kue.Job.get(id, (err, job) => {
+    res.send('The status of job id #' + job.id + ' is ' + job._state);
+  })
+}
 
 module.exports = {
   create: (data, done) => {
     createJob(data, done);
+  },
+  requestStatus: (id, res) => {
+    statusCheck(id, res)
   }
 };
