@@ -43,14 +43,15 @@ const createJob = (data, res) => {
   });
 }
 
-// const processJob = (job, data, res) => {
-//   console.log(data);
-//   // client.hset(job.id, 'data', info, redis.print);
-// },
+const processJob = (job, data, res) => {
+  // console.log(job.id);
+  // console.log(job.data);
+  client.hset(job.id, 'data', job.data, redis.print);
+}
 
-// queue.process('request', 20, (job, done) => {
-//   processJob(job, done);
-// }
+queue.process('job', 20, (job, done) => {
+  processJob(job, done);
+})
 
 
 module.exports = {
