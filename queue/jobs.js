@@ -35,16 +35,16 @@ const createJob = (data, res) => {
   .save((err) => {
     if(err){
       console.log(err);
-      // res.send('There was a problem creating the job');
-      return res.send({
+      res.send({
         message: 'Could not create job',
         success: false,
         error: err
       });
     } else {
       client.hset(job.id, 'data', 'none', redis.print);
-      return res.send({
-        message: 'Successfully create job, your job ID is ' + job.id,
+      res.send({
+        data: 'The URL you submitted was: ' + job.data,
+        message: 'Successfully created job. Your job ID is ' + job.id,
         success: true
       });
     }
@@ -63,7 +63,13 @@ queue.process('job', 20, (job, done) => {
 
 const statusCheck = (id, res) => {
   kue.Job.get(id, (err, job) => {
-    res.send('The status of job id #' + job.id + ' is ' + job._state);
+    if(err){
+      res.send('Something went wrong ' + err);
+    } else if(id == null) {
+      res.send('Your job ID does not exist. Please try again.');
+    } else {
+      res.send('The status of job ID #' + job.id + ' is ' + job._state);
+    }
   })
 }
 
