@@ -4,6 +4,7 @@ const app = require('../app');
 
 require('events').EventEmitter.prototype._maxListeners = 100;
 
+const axios = require('axios');
 const kue = require('kue');
 const queue = kue.createQueue();
 
@@ -21,7 +22,7 @@ client.on('error', (err) => {
 const createJob = (data, res) => {
   let job = queue.create('job', data)
   .priority('high')
-  .removeOnComplete(true)
+  .removeOnComplete(false)
   .on('completed', (result) => {
     console.log('Job completed with data ', result);
   })
@@ -59,28 +60,28 @@ const processJob = (job, data, res) => {
   client.hset(job.id, 'data', job.data, redis.print);
 }
 
-queue.process('job', 20, (job, done) => {
+queue.process('job', 10, (job, done) => {
   processJob(job, done);
-  done();
 })
+
+queue.watchStuckJobs()
 
 const statusCheck = (id, res) => {
   kue.Job.get(id, (err, job) => {
-    if(err){
-      res.send({
-        message: 'Something went wrong ' + err
-      });
-    } else if(id == null) {
-      res.send({
-        message: 'Your job ID does not exist. Please try again.'
-      });
-    } else {
-      res.send({
-        message: 'The status of job ID #' + job.id + ' is ' + job._state
-      });
-    }
+    // console.log('id:' + intId)
+    console.log(job.id)
+  //   if(!err){
+  //     res.send('The status of job ID #' + intId + ' is ' + job._state);
+  //   } else {
+  //     res.send('Something went wrong ' + err);
+  //   }
   })
 }
+
+queue.inactiveCount( function( err, total ) {
+  console.log('inactive:', total);
+});
+
 
 module.exports = {
   create: (data, done) => {
