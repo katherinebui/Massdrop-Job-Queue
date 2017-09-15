@@ -11,6 +11,7 @@ routes.get('/', (req, res) => {
   res.status(200).json({ message: 'Hello! Are you ready?' });
 });
 
+// grabs the url, checks whether it is a valid url and creates a new job
 routes.post('/create/:url', (req, res) => {
   const url = req.params.url;
 
@@ -22,6 +23,7 @@ routes.post('/create/:url', (req, res) => {
   }
 })
 
+// grabs the id and uses it to check the status of the job
 routes.get('/:id/status', (req, res) => {
   const id = req.params.id;
   const p = job.requestStatus(id, res);

@@ -19,6 +19,7 @@ client.on('error', (err) => {
   console.log('An error has occurred: ' + err);
 })
 
+// creates job, if successful- will great a new key value pair in redis
 const createJob = (data, res) => {
   let job = queue.create('job', data)
   .priority('high')
@@ -54,14 +55,17 @@ const createJob = (data, res) => {
   });
 }
 
+// process the job = place the url as a value in redis
 const processJob = (job, data, res) => {
   client.hset(job.id, 'data', job.data, redis.print);
 }
 
+// run jobs concurrently
 queue.process('job', 10, (job, done) => {
   processJob(job, done);
 })
 
+// checks the status by grabbing the id and checking it's state
 const statusCheck = (id, res) => {
   kue.Job.get(id, (err, job) => {
     if(!err){
@@ -72,6 +76,7 @@ const statusCheck = (id, res) => {
   })
 }
 
+// checks to see any inactive count
 queue.inactiveCount( function( err, total ) {
   console.log('inactive:', total);
 });
