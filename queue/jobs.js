@@ -55,8 +55,6 @@ const createJob = (data, res) => {
 }
 
 const processJob = (job, data, res) => {
-  console.log('Checking job id #' + job.id);
-  console.log('Checking for job data: ' + job.data);
   client.hset(job.id, 'data', job.data, redis.print);
 }
 
@@ -64,17 +62,13 @@ queue.process('job', 10, (job, done) => {
   processJob(job, done);
 })
 
-queue.watchStuckJobs()
-
 const statusCheck = (id, res) => {
   kue.Job.get(id, (err, job) => {
-    // console.log('id:' + intId)
-    console.log(job.id)
-  //   if(!err){
-  //     res.send('The status of job ID #' + intId + ' is ' + job._state);
-  //   } else {
-  //     res.send('Something went wrong ' + err);
-  //   }
+    if(!err){
+      res.send('The status of job ID #' + job.id + ' is ' + job._state);
+    } else {
+      res.send('Something went wrong ' + err);
+    }
   })
 }
 
@@ -82,6 +76,7 @@ queue.inactiveCount( function( err, total ) {
   console.log('inactive:', total);
 });
 
+queue.watchStuckJobs()
 
 module.exports = {
   create: (data, done) => {
