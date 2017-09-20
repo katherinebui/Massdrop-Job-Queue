@@ -39,3 +39,21 @@ Example:
 curl "http://localhost:3000/1/status"
 ```
 
+### To query database to check for key/value pair:
+```
+redis-cli
+```
+#### To grab all keys:
+```
+KEYS *
+```
+
+#### To grab all values for a key (which is also the job ID):
+```
+HGETALL (job id)
+```
+Example:
+```
+HGETALL 8
+```
+

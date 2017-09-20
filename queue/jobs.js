@@ -19,7 +19,7 @@ client.on('error', (err) => {
   console.log('An error has occurred: ' + err);
 })
 
-// creates job, if successful- will great a new key value pair in redis
+// creates job in queue, if successful- will great a new key value pair in redis placing url into the db
 const createJob = (data, res) => {
   let job = queue.create('job', data)
   .priority('high')
@@ -37,26 +37,26 @@ const createJob = (data, res) => {
     console.log('Job %s got queued of type %s', id, type );
   })
   .save((err) => {
-    if(err){
-      console.log(err);
+    if(!err){
+      client.hset(job.id, data, 'none', redis.print);
       res.send({
-        message: 'Could not create job',
-        success: false,
-        error: err
-      });
-    } else {
-      client.hset(job.id, 'data', 'none', redis.print);
-      res.send({
-        data: 'The URL you submitted was: ' + job.data,
+        data: 'The URL you submitted was: ' + data,
         message: 'Successfully created job. Your job ID is ' + job.id,
         success: true
       });
-    }
+    } else {
+      res.send({
+        message: 'Could not create job. Please check if input is valid URL',
+        success: false,
+        error: err
+      });
+    };
   });
 }
 
 // process the job = place the url as a value in redis
-const processJob = (job, data, res) => {
+// places the value again just in case it wasn't placed the first time
+const processJob = (job, data) => {
   client.hset(job.id, 'data', job.data, redis.print);
 }
 
@@ -77,15 +77,15 @@ const statusCheck = (id, res) => {
 }
 
 // checks to see any inactive count
-queue.inactiveCount( function( err, total ) {
+queue.inactiveCount( (err, total) => {
   console.log('inactive:', total);
 });
 
-queue.watchStuckJobs()
+queue.watchStuckJobs(6000)
 
 module.exports = {
-  create: (data, done) => {
-    createJob(data, done);
+  create: (data, res) => {
+    createJob(data, res);
   },
   requestStatus: (id, res) => {
     statusCheck(id, res)
