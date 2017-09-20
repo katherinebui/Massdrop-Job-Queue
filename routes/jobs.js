@@ -18,7 +18,6 @@ routes.post('/create/:url', (req, res, err) => {
 
 // npm packages to check for valid url had lots of issues, so I switched to validating the url by making a request to the url to check if is valid
   request(url,  (request, response, err) => {
-    console.log(request, response, err);
     if (response.statusCode == 200) {
       console.log(url + ' is a valid url');
       job.create(url, res);
