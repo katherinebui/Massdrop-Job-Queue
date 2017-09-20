@@ -55,6 +55,7 @@ const createJob = (data, res) => {
 }
 
 // process the job = place the url as a value in redis
+// places the value again just in case it wasn't placed the first time
 const processJob = (job, data) => {
   client.hset(job.id, 'data', job.data, redis.print);
 }
