@@ -16,7 +16,7 @@ routes.get('/', (req, res) => {
 routes.post('/create/:url', (req, res, err) => {
   const url = 'http://' + req.params.url;
 
-// npm packages to check for valid url had lots of issues, so I switched to validating the url by making a request to the url to check if is valid
+// npm packages to check for valid url had lots of issues, so I switched to validating the url by making a request to the url and checking the status code
   request(url,  (request, response, err) => {
     if (response.statusCode == 200) {
       console.log(url + ' is a valid url');
