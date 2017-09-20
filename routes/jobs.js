@@ -1,7 +1,7 @@
 'use strict';
 
 const job = require('../queue/jobs');
-const validURL = require('valid-url');
+const valid = require('url-valid');
 
 const routes = require('express').Router();
 
@@ -13,20 +13,20 @@ routes.get('/', (req, res) => {
 
 // grabs the url, checks whether it is a valid url and creates a new job
 routes.post('/create/:url', (req, res) => {
-  const url = req.params.url;
+  const url = 'http://' + req.params.url;
 
-  if(validURL.isUri('http://' + url)){
-    console.log('URL looks valid!');
-    job.create(url, res);
+  if(job.validInput(url)) {
+    job.create(url, req, res);
+    console.log('yes')
   } else {
-    console.log('This is not a valid url');
+    console.log('oh no')
   }
 })
 
 // grabs the id and uses it to check the status of the job
 routes.get('/:id/status', (req, res) => {
   const id = req.params.id;
-  const p = job.requestStatus(id, res);
+  job.requestStatus(id, res);
 })
 
 module.exports = routes;
