@@ -28,7 +28,7 @@ test('Gets status by ID of job', t => {
     .get('/:id/status')
     .send(dummyID)
     .end((err, res) => {
-      t.ok(res.body.message, 'Should have a message property');
+      t.ok(res.body, 'Should have a message property');
       t.end();
   });
 });
