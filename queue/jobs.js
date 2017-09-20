@@ -1,6 +1,5 @@
 'use strict';
 
-const request = require('request');
 const app = require('../app');
 
 require('events').EventEmitter.prototype._maxListeners = 100;
@@ -20,20 +19,8 @@ client.on('error', (err) => {
   console.log('An error has occurred: ' + err);
 })
 
-// npm packages to check for valid url had lots of issues, so I switched to validating the url by making a request to the url to check if is valid
-const validUrl = (data) => {
-  request(data,  (err, res, body) => {
-    if (!err && res.statusCode == 200) {
-      console.log(data + ' is a valid url');
-    } else {
-      console.log(data + ' is not a valid url')
-      console.log('error: ' + err);
-    }
-  })
-}
-
 // creates job in queue, if successful- will great a new key value pair in redis placing url into the db
-const createJob = (data, req, res) => {
+const createJob = (data, res) => {
   let job = queue.create('job', data)
   .priority('high')
   .removeOnComplete(false)
@@ -68,14 +55,13 @@ const createJob = (data, req, res) => {
 }
 
 // process the job = place the url as a value in redis
-const processJob = (job, data, res) => {
+const processJob = (job, data) => {
   client.hset(job.id, 'data', job.data, redis.print);
 }
 
 // run jobs concurrently
-queue.process('job', 10, (job, res, req, done) => {
+queue.process('job', 10, (job, done) => {
   processJob(job, done);
-  // createJob(job, res, req);
 })
 
 // checks the status by grabbing the id and checking it's state
@@ -94,16 +80,13 @@ queue.inactiveCount( (err, total) => {
   console.log('inactive:', total);
 });
 
-queue.watchStuckJobs()
+queue.watchStuckJobs(6000)
 
 module.exports = {
-  create: (data, req, res) => {
-    createJob(data, req, res);
+  create: (data, res) => {
+    createJob(data, res);
   },
   requestStatus: (id, res) => {
     statusCheck(id, res)
-  },
-  validInput: (data) => {
-    validUrl(data);
   }
 };

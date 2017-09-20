@@ -2,6 +2,7 @@
 
 const job = require('../queue/jobs');
 const valid = require('url-valid');
+const request = require('request');
 
 const routes = require('express').Router();
 
@@ -12,15 +13,20 @@ routes.get('/', (req, res) => {
 });
 
 // grabs the url, checks whether it is a valid url and creates a new job
-routes.post('/create/:url', (req, res) => {
+routes.post('/create/:url', (req, res, err) => {
   const url = 'http://' + req.params.url;
 
-  if(job.validInput(url)) {
-    job.create(url, req, res);
-    console.log('yes')
-  } else {
-    console.log('oh no')
-  }
+// npm packages to check for valid url had lots of issues, so I switched to validating the url by making a request to the url to check if is valid
+  request(url,  (request, response, err) => {
+    console.log(request, response, err);
+    if (response.statusCode == 200) {
+      console.log(url + ' is a valid url');
+      job.create(url, res);
+    } else {
+      console.log(url + ' is not a valid url')
+      console.log(err);
+    }
+  })
 })
 
 // grabs the id and uses it to check the status of the job
